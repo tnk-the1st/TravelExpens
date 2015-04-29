@@ -1,0 +1,33 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                              controllers.Application.index
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                  controllers.Assets.at(path="/public", file)
+
+#旅費 入力用
+GET  /travel_expens/input                controllers.travel_expens.TravelExpensInput.input
+POST  /travel_expens/input                controllers.travel_expens.TravelExpensInput.input
+POST /travel_expens/input-endRow         controllers.travel_expens.TravelExpensInput.addEndRow()
+GET  /travel_expens/input-endRow         controllers.travel_expens.TravelExpensInput.input
+POST /travel_expens/input-specificRow    controllers.travel_expens.TravelExpensInput.addspecificRow()
+GET  /travel_expens/input-specificRow    controllers.travel_expens.TravelExpensInput.input
+POST /travel_expens/input-selectRow      controllers.travel_expens.TravelExpensInput.addSelectRow()
+GET  /travel_expens/input-selectRow      controllers.travel_expens.TravelExpensInput.input
+POST /travel_expens/input-selectCopyRow  controllers.travel_expens.TravelExpensInput.addSelectCopyRow()
+GET  /travel_expens/input-selectCopyRow  controllers.travel_expens.TravelExpensInput.input
+POST /travel_expens/input-add            controllers.travel_expens.TravelExpensInput.insertData()
+
+GET  /javascriptRoutes                   controllers.travel_expens.TravelExpensInput.javascriptRoutes
+GET  /travel_expens/get-station          controllers.travel_expens.TravelExpensInput.getStationData()
+
+#旅費 一覧用
+GET  /travel_expens/display              controllers.travel_expens.TravelExpensDisplay.displayAll
+POST  /travel_expens/display              controllers.travel_expens.TravelExpensDisplay.displayAll
+#旅費 確認画面
+GET  /travel_expens/confirm/:te_cd_hidd              controllers.travel_expens.TravelExpensDisplay.confirm(te_cd_hidd:String)
+# Action not found
+GET /*url                                controllers.travel_expens.TravelExpensInput.notFoundPage(url:String)

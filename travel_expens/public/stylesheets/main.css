@@ -1,0 +1,4 @@
+body.top-fill {
+	margin:  0px;
+	padding: 0; /* 全てのプロパティの余白とパディングをリセット。*/
+}

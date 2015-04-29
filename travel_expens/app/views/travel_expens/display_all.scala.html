@@ -1,0 +1,58 @@
+@(headData: List[Map[String, String]],monthArray:Array[String])
+<!DOCTYPE html>
+<html class="display-back">
+    <head>
+        <title>旅費一覧画面</title>
+        @views.html.travel_expens.common.taglib()
+        
+        <script>
+        <!--
+        $(function(){
+            //アコーディオン関係ddタグ
+            $('.accordion_dl dd').hide();
+            $('.accordion_dl dt').click(function(){
+                $(this).toggleClass("active");   
+                $(this).siblings("dt").removeClass("active");
+                $(this).next("dd").slideToggle();
+                $(this).next("dd").siblings("dd").slideUp();
+            });
+        });
+        function confDisp(rouNum){
+        	document.forms[0].action = "/travel_expens/confirm/"+$("[name=te_cd_hidd]").eq(rouNum).val();
+            document.forms[0].submit();
+        }
+        
+        // -->
+        </script>
+    </head>
+
+    <body class="body-center" id ="travel_form">
+    	<form id="apply_travel_view" action="/travel_expens/confirm" method="GET">
+    	<div id="main">
+    	    <div id="menu">
+    	        @views.html.travel_expens.common.left_menu()
+            </div>
+            <div id="contents">
+			    <div class="menu">
+                    <dl class="accordion_dl">
+                    @for(i:Int <- 0 to monthArray.size.toInt-1){
+                        <dt>@monthArray(i).patch(4, "年", 1).patch(7, "月", 1)</dt>
+                        <dd>
+                            <ul class="appli_various">
+                            @headData.zipWithIndex.map { case (hd, index) =>
+                                @if(monthArray(i) == hd.getOrElse("apply_date","")){
+                                <li>@{index.toInt+1}番目<a href="javascript:void(0);" onClick="confDisp(@index);">@hd.getOrElse("apply_date","") -<span class="cre-date-link"> @hd.getOrElse("create_date","")</span></span></a>
+                                <input type="hidden" name="te_cd_hidd" value="@hd.getOrElse("te_cd","")"/>
+                                </li>
+                                }
+                             }
+                            </ul>
+                        </dd>
+                    }
+					</dl>
+                </div>
+		    </div>
+	    </div>
+    	</form>
+    </body>
+</html>

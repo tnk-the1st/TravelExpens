@@ -1,0 +1,88 @@
+@(confHeadData: Form[form.TravelExpensForm.HeadFormData],confDetailData:Form[form.TravelExpensForm.DetailFormData])
+<!DOCTYPE html>
+<html class="">
+    <head>
+        <title>旅費入力画面</title>
+        @views.html.travel_expens.common.taglib()
+        <script>
+        <!--        
+        // -->
+        </script>
+    </head>
+
+    <body class="body-center display-back" id ="travel_form">
+    	<form id="apply_travel_view" action="/travel_expens/input-add" method="POST">
+    	<div id="main">
+    	    <div id="menu">
+    	        @views.html.travel_expens.common.left_menu()
+            </div>
+            <div id="contents">
+	    	    
+		    	<div class="div-right">
+		    	    <input type="text" name="apply_date"id="apply_date" class="jquery-ui-datepicker-yymm" value="@confHeadData.data.getOrElse("applyDate", "")"/>
+		    		<input type="text" name="full_name" id="full_name" value="@confHeadData.data.getOrElse("fullName", "")"/>
+		    	</div>
+		        <br/>
+		    	<div id="table">
+			    	<div class="row">
+			    	    <div class="div-head use-day">利用日</div>
+			    	    <div class="div-head travel-reason">旅行事由</div>
+			    	    <div class="div-head classification">区分</div>
+			    	    <div class="div-head departure">出発地</div>
+			    	    <div class="div-head destination">目的地</div>
+			    	    <div class="div-head forward-piece">往/片</div>
+			    	    <div class="div-head transportation">交通手段</div>
+			    	    <div class="div-head transport-expens">交通費</div>
+			    	    <div class="div-head accommodation">宿泊費</div>
+			    	    <div class="div-head per-diem">日当</div>
+			    	    <div class="div-head remarks">備考</div>
+			    	</div>
+			    	<input type="hidden" value="" name="row_num_sel"/>
+			    	@for(i:Int <- 1 to confHeadData.data.getOrElse("maxRowNum", "").toInt){
+			        <div class="row div-row-conf-parent">
+			            <input type="hidden" value="@confDetailData.data.getOrElse("selectRow["+{i-1}+"]", "")" name="row_num"/>
+
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("useDay["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("travelReason["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+	                        @confDetailData.data.getOrElse("tripClass["+{i-1}+"]", "")
+	                        <!-- input type="hidden" value="@confDetailData.data.getOrElse("tripClass["+{i-1}+"]", "")" name="trip_class_hid"-->
+		    		    </div>
+			   		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("departure["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("destination["+{i-1}+"]", "")
+		    		    </div>		    		    
+			    		<div class="div-row-conf-each">
+			    	        @confDetailData.data.getOrElse("forwardPiece["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("transportation["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("transportExpens["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("accommodation["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("perDiem["+{i-1}+"]", "")
+		    		    </div>
+		    		    <div class="div-row-conf-each">
+		    		        @confDetailData.data.getOrElse("remarks["+{i-1}+"]", "")
+		    		    </div>
+		    		    <br>
+		    		</div>
+			        }
+			        
+		    	</div>
+		    </div>
+	    </div>
+    	</form>
+    </body>
+</html>

@@ -1,0 +1,167 @@
+@(headData: Form[form.TravelExpensForm.HeadFormData] ,labelList:List[Map[String, String]], detailData:Form[form.TravelExpensForm.DetailFormData])
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>旅費入力画面</title>
+        @views.html.travel_expens.common.taglib()
+        <script>
+        <!--
+        $(function(){
+        	$( "[name='departure']" ).autocomplete({
+        		source: function(req, resp){
+        			jsRoutes.controllers.travel_expens.TravelExpensInput.getStationData().ajax({
+            	        // 送信したらボタンを使用不可にし二重投稿を防ぐ
+            	        beforeSend: function() {
+            	            $("#travel_submit").attr('disabled', true);
+            	        },
+            	        // 完了したらボタン使用不可を解除する
+            	        complete: function() {
+            	            $("#travel_submit").attr('disabled', false);
+            	        },
+            	        // 投稿が成功したら新しいコメントを表示する
+            	        success: function(datetime) {
+            	        	console.log(datetime);
+            	        	alert("成功")
+            	        },
+            	        error: function() {
+            	            alert("Insert Error");
+            	        }
+            	    })
+        		}
+        		
+        	});
+        	
+        	$.datepicker.setDefaults($.datepicker.regional['ja']);
+            $('.jquery-ui-datepicker').datepicker({
+            	inline: true,
+            	dateFormat: 'yy/mm/dd'
+            });
+            //年月用調整中
+            $('.jquery-ui-datepicker-yymm').datepicker({
+            	inline: true,
+            	dateFormat: 'yy/mm',
+            	changeMonth: true,
+                changeYear: true
+            });
+            
+        	//年月入力
+        	$('.jquery-ui-datepicker-yymm').ympicker();
+        	
+            $('#travel_submit').click(function(event){
+            	sendDataJs(event);
+            })
+        });
+        
+
+        
+        // -->
+        </script>
+    </head>
+
+    <body class="body-center background-image" id ="travel_form">
+    	<form id="apply_travel_view" action="/travel_expens/input-add" method="POST">
+    	<div id="main">
+    	    <div id="menu">
+    	        @views.html.travel_expens.common.left_menu()
+            </div>
+            <div id="contents">
+	    	    <div class="div-left">
+	    	        <a href="javascript:void(0);" id="add_row" class="travel-botton"onClick="addRow();">行追加</a>
+	    	        <a href="javascript:void(0);" id="select_add_row" class="travel-botton"onClick="addSelectRow();">選択行追加</a>
+	    	        <a href="javascript:void(0);" id="select_add_row" class="travel-botton"onClick="addSelectCopyRow();">コピー行追加</a>
+	    	        <a href="javascript:void(0);" id="travel_submit" class="travel-botton">登録</a>
+	    	    </div>
+		    	<div class="div-right">
+		    	    <input type="text" name="apply_date"id="apply_date" class="jquery-ui-datepicker-yymm" value="@headData.data.getOrElse("applyDate", "")"/>
+		    		<input type="text" name="full_name" id="full_name" value="@headData.data.getOrElse("fullName", "")"/>
+		    	</div>
+		        <br/>
+		        <input type="hidden" value="@headData.data.getOrElse("rowNum", "")" name="detail_lines">
+		    	<div id="table">
+			    	<div class="row">
+		                <div class="div-head row-sp"></div>
+			    	    <div class="div-head use-day">利用日</div>
+			    	    <div class="div-head travel-reason">旅行事由</div>
+			    	    <div class="div-head classification">区分</div>
+			    	    <div class="div-head departure">出発地</div>
+			    	    <div class="div-head destination">目的地</div>
+			    	    <div class="div-head forward-piece">往/片</div>
+			    	    <div class="div-head transportation">交通手段</div>
+			    	    <div class="div-head transport-expens">交通費</div>
+			    	    <div class="div-head accommodation">宿泊費</div>
+			    	    <div class="div-head per-diem">日当</div>
+			    	    <div class="div-head remarks">備考</div>
+			    	</div>
+			    	<input type="hidden" value="" name="row_num_sel"/>
+			    	@for(i:Int <- 1 to headData.data.getOrElse("maxRowNum", "").toInt){
+			        <div class="row div-row">
+			            <input type="hidden" value="@i" name="row_num"/>
+			   	        <div>
+     			   	        <input type="checkbox" name="select_row" value="@i" id="select_row@i"
+			   	            @if(""!=detailData.data.getOrElse("selectRow["+{i-1}+"]", "")){checked}/>
+       			   	        <a href="javascript:void(0);" name="line_add_row" class="add-row-botton"onClick="addSpecificRow(@i);">追</a>		   	            
+			    	    </div>
+		    		    <div>
+		    		        <input type="text" name="use_day" class="jquery-ui-datepicker" placeholder="yyyy/mm/dd" value="@detailData.data.getOrElse("useDay["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="travel_reason" value="@detailData.data.getOrElse("travelReason["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>		    		    
+		    		        <select name="trip_class">
+		    		        　                 <option value=""></option>
+	                            @labelList.slice(0, 1).map{ ll1 =>
+                                    @ll1.map{case (key, value) =>
+                                    <option value="@key" @if(key==detailData.data.getOrElse("tripClass["+{i-1}+"]", "")){selected}>@value</option>
+                                    }
+                                }
+	                        </select>
+	                        <!-- input type="hidden" value="@detailData.data.getOrElse("tripClass["+{i-1}+"]", "")" name="trip_class_hid"-->
+		    		    </div>
+			   		    <div>
+		    		        <input type="text" name="departure" class="input-departure" value="@detailData.data.getOrElse("departure["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="destination" class="input-destination" value="@detailData.data.getOrElse("destination["+{i-1}+"]", "")"/>
+		    		    </div>		    		    
+			    		<div>
+			    	        <select name="forward_piece">
+			    	        　                 <option value=""></option>
+		                        @labelList.slice(1, 2).map{ ll1 =>
+	                                @ll1.map{case (key, value) =>
+	                                <option value="@key" @if(key==detailData.data.getOrElse("forwardPiece["+{i-1}+"]", "")){selected}>@value</option>
+                                    }
+                                }
+	                        </select>
+		    		    </div>
+		    		    <div>
+		    		        <select name="transportation">
+		    		        　                 <option value=""></option>
+	                            @labelList.slice(2, 3).map{ ll1 =>
+                                    @ll1.map{case (key, value) =>
+                                    <option value="@key"  @if(key==detailData.data.getOrElse("transportation["+{i-1}+"]", "")){selected}>@value</option>
+                                    }
+                                }
+	                        </select>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="transport_expens" style="text-align: right;" value="@detailData.data.getOrElse("transportExpens["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="accommodation" style="text-align: right;" value="@detailData.data.getOrElse("accommodation["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="per_diem" style="text-align: right;" value="@detailData.data.getOrElse("perDiem["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <div>
+		    		        <input type="text" name="remarks" value="@detailData.data.getOrElse("remarks["+{i-1}+"]", "")"/>
+		    		    </div>
+		    		    <br>
+		    		</div>
+			        }
+		    	</div>
+		    </div>
+	    </div>
+    	</form>
+    </body>
+</html>

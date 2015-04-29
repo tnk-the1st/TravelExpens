@@ -1,0 +1,9 @@
+This is your new Play application
+=====================================
+
+This file will be packaged with your application, when using `play dist`.
+
+旅費精算の入力画面と一覧画面を作成したもの
+input
+display
+configの3つに分かれる
